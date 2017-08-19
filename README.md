@@ -7,7 +7,7 @@ npm install bdom
 
 ### usage
 ```js
-const dom = require('../../dom')
+const dom = require('bdom')
 const { h1, text, figcaption, style } = dom
 
 const txt = text('BAR')
@@ -22,7 +22,7 @@ h1(
 ...and the same by replacing React and in jsx
 
 ```js
-const dom = require('../../dom')
+const dom = require('bdom')
 const React = dom
 
 const txt = text('BAR')

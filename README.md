@@ -1,12 +1,12 @@
 #bdom - jsx compatible shorthand tool for creating actual dom elements
 
 ## installation
-´´´bash
+```bash
 npm install bdom
-´´´
+```
 
 ### usage
-´´´js
+```js
 const dom = require('../../dom')
 const { h1, text, figcaption, style } = dom
 
@@ -17,11 +17,11 @@ h1(
     txt, 
     figcaption( style('background-color: orange; font-size:0.5rem;'), 'a friend of foo' )
 )
-´´´
+```
 
 ...and the same by replacing React and in jsx
 
-´´´js
+```js
 const dom = require('../../dom')
 const React = dom
 
@@ -32,7 +32,7 @@ const title =
     {txt}
     <figcaption style="background-color: orange; font-size:0.5rem;">a friend of foo</figcaption>
 </h1>
-´´´
+```
 
 ## tests
 npm test

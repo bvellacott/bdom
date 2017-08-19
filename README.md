@@ -1,4 +1,4 @@
-#bdom - jsx compatible shorthand tool for creating actual dom elements
+# bdom - jsx compatible shorthand tool for creating actual dom elements
 
 ## installation
 ```bash

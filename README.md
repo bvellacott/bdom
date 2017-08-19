@@ -18,7 +18,7 @@ h1(
     figcaption( style('background-color: orange; font-size:0.5rem;'), 'a friend of foo' )
 )
 
-document.findElementsByTagName('body').appendChild(title)
+document.findElementsByTagName('body')[0].appendChild(title)
 ```
 
 ...and the same by replacing React and in jsx
@@ -35,7 +35,7 @@ const title =
     <figcaption style="background-color: orange; font-size:0.5rem;">a friend of foo</figcaption>
 </h1>
 
-document.findElementsByTagName('body').appendChild(title)
+document.findElementsByTagName('body')[0].appendChild(title)
 ```
 
 ## tests

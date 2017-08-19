@@ -1,94 +1,94 @@
-const doc = window.document;
-const { Element, Attr, Node } = window;
-const { ELEMENT_NODE, ATTRIBUTE_NODE } = doc;
+const doc = window.document
+const { Element, Attr, Node} = window
+const { ELEMENT_NODE, ATTRIBUTE_NODE } = doc
 
 function addAttributesTo(node, attributes) {
-	let value;
-	for (let attrName in attributes) {
-		value = attributes[attrName];
-		if (value && typeof value !== 'string') {
-			value = typeof value.toString === 'function' ? value.toString() : '' + value;
+	let value
+	for(let attrName in attributes) {
+		value = attributes[attrName]
+		if(value && typeof value !== 'string') {
+			value = typeof value.toString === 'function' ? value.toString() : '' + value
 		}
-		node.setAttribute(attrName, value);
+		node.setAttribute(attrName, value)
 	}
 }
 
 // element factories
 function element(name) {
-	if (!name) {
-		throw new Error('you must provide a tag name for the createable element');
+	if(!name) {
+		throw new Error('you must provide a tag name for the createable element')
 	}
 
-	const newNode = doc.createElement(name);
-	for (let i = 1; i < arguments.length; i++) {
-		const source = arguments[i];
-		switch (typeof source) {
+	const newNode = doc.createElement(name)
+	for(let i = 1; i < arguments.length; i++) {
+		const source = arguments[i]
+		switch(typeof source) {
 			case 'object':
-				if (source) {
-					if (source instanceof Attr || /* deprecated */source.nodeType === ATTRIBUTE_NODE) {
-						newNode.setAttributeNode(source);
-					} else if (source instanceof Element || source.nodeType === ELEMENT_NODE) {
-						newNode.appendChild(source);
-					} else if (source instanceof Node || source.nodeType) {
-						if (console && console.log) {
-							console.log('!WARNING! - support for nodes of type: ' + (source.name || source.nodeType) + " hasn't been tested - !WARNING!");
+				if(source) {
+					if(source instanceof Attr || /* deprecated */ source.nodeType === ATTRIBUTE_NODE) {
+						newNode.setAttributeNode(source)
+					}
+					else if(source instanceof Element || source.nodeType === ELEMENT_NODE) {
+						newNode.appendChild(source)
+					}
+					else if(source instanceof Node || source.nodeType) {
+						if(console && console.log) {
+							console.log('!WARNING! - support for nodes of type: ' + 
+								(source.name || source.nodeType) + 
+								" hasn't been tested - !WARNING!")
 						}
-						newNode.appendChild(source);
-					} else {
-						addAttributesTo(newNode, source);
+						newNode.appendChild(source)
+					}
+					else {
+						addAttributesTo(newNode, source)
 					}
 				}
-				break;
-			// nulls are disregarded
+				break
+				// nulls are disregarded
 			case 'undefined':
 				// undefineds are disregarded
-				break;
+				break
 			case 'string':
 			case 'number':
 			case 'boolean':
-				newNode.appendChild(doc.createTextNode(source));
-				break;
+				newNode.appendChild(doc.createTextNode(source))
+				break
 			default:
-				throw new Error('an unhandled element appending situation was found');
+				throw new Error('an unhandled element appending situation was found')
 		}
 	}
 
-	return newNode;
+	return newNode
 }
 
 // attribute factories
 function attribute(name, value) {
-	const attr = doc.createAttribute(name, value);
-	attr.nodeValue = value;
-	return attr;
+	const attr = doc.createAttribute(name, value) 
+	attr.nodeValue = value
+	return attr
 }
 
 // methods to create shorthand builders
-function createEl(name) {
-	return function () {
-		return element.apply(dom, [name, ...arguments]);
-	};
+function createEl(name) { 
+	return function() { return element.apply(dom, [name, ...arguments]) }
 }
 
-function createAttr(name) {
-	return function (value) {
-		return attribute(name, value);
-	};
+function createAttr(name) { 
+	return function(value) { return attribute(name, value) }
 }
 
 // data is a special case because it has an optional extension
 function data(arg1, arg2) {
-	if (arguments.length > 1) {
-		return attribute('data-' + arg1, arg2);
+	if(arguments.length > 1) {
+		return attribute('data-' + arg1, arg2) 
 	}
-	return attribute('data', arg1);
+	return attribute('data', arg1)
 }
+
 
 const dom = {
 	element,
-	text: function (txt) {
-		return doc.createTextNode(txt);
-	},
+	text: function(txt) { return doc.createTextNode(txt) },
 	attribute,
 
 	// element factories
@@ -292,8 +292,8 @@ const dom = {
 	value: createAttr('value'),
 	width: createAttr('width'),
 	wrap: createAttr('wrap')
-};
+}
 
-dom.createElement = dom.element;
+dom.createElement = dom.element
 
-module.exports = dom;
+module.exports = dom

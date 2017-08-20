@@ -10,14 +10,14 @@ npm install bdom
 ### usage
 ```js
 const dom = require('bdom')
-const { h1, text, figcaption, style } = dom
+const { H1, text, Figcaption, style } = dom // capital elements attributes and text lower case
 
 const txt = text('BAR')
 
 const title = 
-h1(
+H1(
     txt, 
-    figcaption( style('background-color: orange; font-size:0.5rem;'), 'a friend of foo' )
+    Figcaption( style('background-color: orange; font-size:0.5rem;'), 'a friend of foo' )
 )
 
 let secs = 0

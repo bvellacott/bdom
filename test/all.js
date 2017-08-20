@@ -123,6 +123,30 @@ describe('element builder', () => {
 			" of type: 8 hasn\'t been tested - !WARNING!")    
   })
 
+
+  it('add document fragment', () => {
+  	let warning
+
+  	const realLogger = global.console.log
+  	global.console.log = (warn) => warning = warn
+
+  	const fragment = doc.createDocumentFragment()
+	  fragment.appendChild(doc.createElement('span'))
+	  fragment.appendChild(doc.createElement('i'))
+    fragment.appendChild(doc.createTextNode('what a wonderful link')) 
+    fragment.appendChild(doc.createTextNode(" - isn't it?"))
+    fragment.appendChild(doc.createComment('comcomcomcomcomc...'))
+
+    const link = element('a', fragment)
+    
+  	global.console.log = realLogger
+
+		expect(link.getElementsByTagName('span').length).to.equal(1)    
+		expect(link.getElementsByTagName('i').length).to.equal(1)    
+		expect(link.text).to.equal("what a wonderful link - isn't it?")    
+		expect(warning).to.be(undefined)    
+  })
+
 })
 
 describe('attribute builder', () => {

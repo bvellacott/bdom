@@ -1,6 +1,11 @@
 const doc = window.document
-const { Element, Attr, Node} = window
-const { ELEMENT_NODE, ATTRIBUTE_NODE } = doc
+const { Element, Attr, DocumentFragment, Node} = window
+const { ELEMENT_NODE, ATTRIBUTE_NODE, DOCUMENT_FRAGMENT_NODE } = doc
+
+const testedNodeTypes = {
+	ELEMENT_NODE, 
+	DOCUMENT_FRAGMENT_NODE
+}
 
 function addAttributesTo(node, attributes) {
 	let value
@@ -26,7 +31,9 @@ function addChild(element, child, offset) {
 				if(child instanceof Attr || /* deprecated */ child.nodeType === ATTRIBUTE_NODE) {
 					element.setAttributeNode(child)
 				}
-				else if(child instanceof Element || child.nodeType === ELEMENT_NODE) {
+				else if(child.nodeType in testedNodeTypes || 
+					child instanceof Element ||
+					child instanceof DocumentFragment) {
 					element.appendChild(child)
 				}
 				else if(child instanceof Node || child.nodeType) {

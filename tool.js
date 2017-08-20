@@ -9,12 +9,29 @@ const testedNodeTypes = {
 
 function addAttributesTo(node, attributes) {
 	let value
-	for(let attrName in attributes) {
-		value = attributes[attrName]
-		if(value && typeof value !== 'string') {
-			value = typeof value.toString === 'function' ? value.toString() : '' + value
+	for (let attrName in attributes) {
+		value = attributes[attrName];
+		// check if a property with the name exists on the instance and set it instead if true
+		if(attrName in node) {
+			let curValue = node[attrName]
+			if(curValue && typeof curValue === 'object') {
+				// if the target is an object, attempt to assign the value on it
+				if(typeof value !== 'object') {
+					throw new Error(`${attrName} is an object. You can only assign another object on it`)
+				}
+				Object.assign(curValue, value)
+			}
+			else {
+				node[attrName] = value
+			}
 		}
-		node.setAttribute(attrName, value)
+		else if (value && typeof value !== 'string') {
+			value = typeof value.toString === 'function' ? value.toString() : '' + value;
+			node.setAttribute(attrName, value);
+		}
+		else {
+			node.setAttribute(attrName, value);
+		}
 	}
 }
 
@@ -24,11 +41,11 @@ function addChildren(element, children, offset) {
 	}
 }
 
-function addChild(element, child, offset) {
+function addChild(element, child) {
 	switch(typeof child) {
 		case 'object':
 			if(child) {
-				if(child instanceof Attr || /* deprecated */ child.nodeType === ATTRIBUTE_NODE) {
+				if(child instanceof Attr || /* deprecated node type -> */ child.nodeType === ATTRIBUTE_NODE) {
 					element.setAttributeNode(child)
 				}
 				else if(child.nodeType in testedNodeTypes || 
@@ -44,7 +61,7 @@ function addChild(element, child, offset) {
 					}
 					element.appendChild(child)
 				}
-				else if(typeof child.length === 'number') {
+				else if(typeof child !== 'string' && typeof child.length === 'number') {
 					addChildren(element, child, 0)
 				}
 				else {
@@ -72,8 +89,22 @@ function element(name) {
 		throw new Error('you must provide a tag name for the createable element')
 	}
 
-	const newNode = doc.createElement(name)
-	addChildren(newNode, arguments, 1)
+	let newNode
+	if(typeof name === 'function') {
+		const props = arguments[1] || {}
+		const children = []
+		for(let ci = 2; ci < arguments.length; ci++) {
+			children.push(arguments[ci])
+		}
+		newNode = new name(props, children)
+	}
+	else if(name instanceof Element || name.nodeType === ELEMENT_NODE) {
+		newNode = name
+	}
+	else {
+		newNode = doc.createElement(name)
+		addChildren(newNode, arguments, 1)
+	}
 
 	return newNode
 }
@@ -109,90 +140,90 @@ const dom = {
 	attribute,
 
 	// element factories
-	html: createEl('html'),
-	body: createEl('body'),
-	div: createEl('div'),
-	span: createEl('span'),
-	applet: createEl('applet'),
-	object: createEl('object'),
-	iframe: createEl('iframe'),
-	h1: createEl('h1'),
-	h2: createEl('h2'),
-	h3: createEl('h3'),
-	h4: createEl('h4'),
-	h5: createEl('h5'),
-	h6: createEl('h6'),
-	p: createEl('p'),
-	blockquote: createEl('blockquote'),
-	pre: createEl('pre'),
-	a: createEl('a'),
-	abbr: createEl('abbr'),
-	acronym: createEl('acronym'),
-	address: createEl('address'),
-	big: createEl('big'),
-	cite: createEl('cite'),
-	code: createEl('code'),
-	del: createEl('del'),
-	dfn: createEl('dfn'),
-	em: createEl('em'),
-	img: createEl('img'),
-	ins: createEl('ins'),
-	kbd: createEl('kbd'),
-	q: createEl('q'),
-	s: createEl('s'),
-	samp: createEl('samp'),
-	small: createEl('small'),
-	strike: createEl('strike'),
-	strong: createEl('strong'),
-	sub: createEl('sub'),
-	sup: createEl('sup'),
-	tt: createEl('tt'),
-	varAttr: createEl('var'),
-	b: createEl('b'),
-	u: createEl('u'),
-	i: createEl('i'),
-	center: createEl('center'),
-	dl: createEl('dl'),
-	dt: createEl('dt'),
-	dd: createEl('dd'),
-	ol: createEl('ol'),
-	ul: createEl('ul'),
-	li: createEl('li'),
-	fieldset: createEl('fieldset'),
-	form: createEl('form'),
-	label: createEl('label'),
-	legend: createEl('legend'),
-	table: createEl('table'),
-	caption: createEl('caption'),
-	tbody: createEl('tbody'),
-	tfoot: createEl('tfoot'),
-	thead: createEl('thead'),
-	tr: createEl('tr'),
-	th: createEl('th'),
-	td: createEl('td'),
-	article: createEl('article'),
-	aside: createEl('aside'),
-	canvas: createEl('canvas'),
-	details: createEl('details'),
-	embed: createEl('embed'),
-	figure: createEl('figure'),
-	figcaption: createEl('figcaption'),
-	footer: createEl('footer'),
-	header: createEl('header'),
-	hgroup: createEl('hgroup'),
-	menu: createEl('menu'),
-	nav: createEl('nav'),
-	output: createEl('output'),
-	ruby: createEl('ruby'),
-	section: createEl('section'),
-	summary: createEl('summary'),
-	time: createEl('time'),
-	mark: createEl('mark'),
-	audio: createEl('audio'),
-	video: createEl('video'),
+	Html: createEl('html'),
+	Body: createEl('body'),
+	Div: createEl('div'),
+	Span: createEl('span'),
+	Applet: createEl('applet'),
+	Object: createEl('object'),
+	Iframe: createEl('iframe'),
+	H1: createEl('h1'),
+	H2: createEl('h2'),
+	H3: createEl('h3'),
+	H4: createEl('h4'),
+	H5: createEl('h5'),
+	H6: createEl('h6'),
+	P: createEl('p'),
+	Blockquote: createEl('blockquote'),
+	Pre: createEl('pre'),
+	A: createEl('a'),
+	Abbr: createEl('abbr'),
+	Acronym: createEl('acronym'),
+	Address: createEl('address'),
+	Big: createEl('big'),
+	Cite: createEl('cite'),
+	Code: createEl('code'),
+	Del: createEl('del'),
+	Dfn: createEl('dfn'),
+	Em: createEl('em'),
+	Img: createEl('img'),
+	Ins: createEl('ins'),
+	Kbd: createEl('kbd'),
+	Q: createEl('q'),
+	S: createEl('s'),
+	Samp: createEl('samp'),
+	Small: createEl('small'),
+	Strike: createEl('strike'),
+	Strong: createEl('strong'),
+	Sub: createEl('sub'),
+	Sup: createEl('sup'),
+	Tt: createEl('tt'),
+	Var: createEl('var'),
+	B: createEl('b'),
+	U: createEl('u'),
+	I: createEl('i'),
+	Center: createEl('center'),
+	Dl: createEl('dl'),
+	Dt: createEl('dt'),
+	Dd: createEl('dd'),
+	Ol: createEl('ol'),
+	Ul: createEl('ul'),
+	Li: createEl('li'),
+	Fieldset: createEl('fieldset'),
+	Form: createEl('form'),
+	Label: createEl('label'),
+	Legend: createEl('legend'),
+	Table: createEl('table'),
+	Caption: createEl('caption'),
+	Tbody: createEl('tbody'),
+	Tfoot: createEl('tfoot'),
+	Thead: createEl('thead'),
+	Tr: createEl('tr'),
+	Th: createEl('th'),
+	Td: createEl('td'),
+	Article: createEl('article'),
+	Aside: createEl('aside'),
+	Canvas: createEl('canvas'),
+	Details: createEl('details'),
+	Embed: createEl('embed'),
+	Figure: createEl('figure'),
+	Figcaption: createEl('figcaption'),
+	Footer: createEl('footer'),
+	Header: createEl('header'),
+	Hgroup: createEl('hgroup'),
+	Menu: createEl('menu'),
+	Nav: createEl('nav'),
+	Output: createEl('output'),
+	Ruby: createEl('ruby'),
+	Section: createEl('section'),
+	Summary: createEl('summary'),
+	Time: createEl('time'),
+	Mark: createEl('mark'),
+	Audio: createEl('audio'),
+	Video: createEl('video'),
 
 	// data is a special case because it has an optional extension
-	data: data,
+	data,
 
 	accept: createAttr('accept'),
 	acceptCharset: createAttr('accept-charset'),
@@ -211,9 +242,9 @@ const dom = {
 	challenge: createAttr('challenge'),
 	charset: createAttr('charset'),
 	checked: createAttr('checked'),
-	citeAttr: createAttr('cite'),
-	classAttr: createAttr('class'),
-	codeAttr: createAttr('code'),
+	cite: createAttr('cite'),
+	class: createAttr('class'),
+	code: createAttr('code'),
 	codebase: createAttr('codebase'),
 	color: createAttr('color'),
 	cols: createAttr('cols'),
@@ -225,7 +256,7 @@ const dom = {
 	coords: createAttr('coords'),
 	crossorigin: createAttr('crossorigin'),
 	datetime: createAttr('datetime'),
-	defaultAttr: createAttr('default'),
+	default: createAttr('default'),
 	defer: createAttr('defer'),
 	dir: createAttr('dir'),
 	dirname: createAttr('dirname'),
@@ -234,8 +265,8 @@ const dom = {
 	draggable: createAttr('draggable'),
 	dropzone: createAttr('dropzone'),
 	enctype: createAttr('enctype'),
-	forAttr: createAttr('for'),
-	formAttr: createAttr('form'),
+	for: createAttr('for'),
+	form: createAttr('form'),
 	formaction: createAttr('formaction'),
 	headers: createAttr('headers'),
 	height: createAttr('height'),
@@ -251,7 +282,7 @@ const dom = {
 	itemprop: createAttr('itemprop'),
 	keytype: createAttr('keytype'),
 	kind: createAttr('kind'),
-	labelAttr: createAttr('label'),
+	label: createAttr('label'),
 	lang: createAttr('lang'),
 	language: createAttr('language'),
 	list: createAttr('list'),
@@ -291,7 +322,7 @@ const dom = {
 	size: createAttr('size'),
 	sizes: createAttr('sizes'),
 	slot: createAttr('slot'),
-	spanAttr: createAttr('span'),
+	span: createAttr('span'),
 	spellcheck: createAttr('spellcheck'),
 	src: createAttr('src'),
 	srcdoc: createAttr('srcdoc'),
@@ -300,7 +331,7 @@ const dom = {
 	start: createAttr('start'),
 	step: createAttr('step'),
 	style: createAttr('style'),
-	summaryAttr: createAttr('summary'),
+	summary: createAttr('summary'),
 	tabindex: createAttr('tabindex'),
 	target: createAttr('target'),
 	title: createAttr('title'),

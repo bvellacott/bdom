@@ -7,12 +7,17 @@ const testedNodeTypes = {
 	DOCUMENT_FRAGMENT_NODE
 }
 
+var reactDebugAttributes = {
+	__source: 1,
+	__self: 1,
+};
+
 function addAttributesTo(node, attributes) {
 	let value
 	for (let attrName in attributes) {
 		value = attributes[attrName];
 		// check if a property with the name exists on the instance and set it instead if true
-		if(attrName in node) {
+		if(attrName in node || attrName in reactDebugAttributes) {
 			let curValue = node[attrName]
 			if(curValue && typeof curValue === 'object') {
 				// if the target is an object, attempt to assign the value on it

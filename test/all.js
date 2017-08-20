@@ -61,6 +61,17 @@ describe('element builder', () => {
 		expect(link.text).to.equal("what a wonderful link - isn't it?")    
   })
 
+  it('array of children', () => {
+  	const ary = [
+			doc.createTextNode('what a wonderful link'), 
+    	doc.createTextNode(" - isn't it?")
+   	]
+
+    const link = element('a', ary)
+    
+		expect(link.text).to.equal("what a wonderful link - isn't it?")    
+  })
+
   it('other nodes show a warning', () => {
   	let warning
 

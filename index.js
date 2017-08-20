@@ -13,50 +13,59 @@ function addAttributesTo(node, attributes) {
 	}
 }
 
-// element factories
+function addChildren(element, children, offset) {
+	for (let i = offset; i < children.length; i++) {
+		addChild(element, children[i]);
+	}
+}
+
+function addChild(element, child, offset) {
+	switch (typeof child) {
+		case 'object':
+			if (child) {
+				if (child instanceof Attr || /* deprecated */child.nodeType === ATTRIBUTE_NODE) {
+					element.setAttributeNode(child);
+				} else if (child instanceof Element || child.nodeType === ELEMENT_NODE) {
+					element.appendChild(child);
+				} else if (child instanceof Node || child.nodeType) {
+					if (console && console.log) {
+						console.log('!WARNING! - support for nodes of type: ' + (child.name || child.nodeType) + " hasn't been tested - !WARNING!");
+					}
+					element.appendChild(child);
+				} else if (typeof child.length === 'number') {
+					addChildren(element, child, 0);
+				} else {
+					addAttributesTo(element, child);
+				}
+			}
+			break;
+		// nulls are disregarded
+		case 'undefined':
+			// undefineds are disregarded
+			break;
+		case 'string':
+		case 'number':
+		case 'boolean':
+			element.appendChild(doc.createTextNode(child));
+			break;
+		default:
+			throw new Error('an unhandled element appending situation was found');
+	}
+}
+
+// element factory
 function element(name) {
 	if (!name) {
 		throw new Error('you must provide a tag name for the createable element');
 	}
 
 	const newNode = doc.createElement(name);
-	for (let i = 1; i < arguments.length; i++) {
-		const source = arguments[i];
-		switch (typeof source) {
-			case 'object':
-				if (source) {
-					if (source instanceof Attr || /* deprecated */source.nodeType === ATTRIBUTE_NODE) {
-						newNode.setAttributeNode(source);
-					} else if (source instanceof Element || source.nodeType === ELEMENT_NODE) {
-						newNode.appendChild(source);
-					} else if (source instanceof Node || source.nodeType) {
-						if (console && console.log) {
-							console.log('!WARNING! - support for nodes of type: ' + (source.name || source.nodeType) + " hasn't been tested - !WARNING!");
-						}
-						newNode.appendChild(source);
-					} else {
-						addAttributesTo(newNode, source);
-					}
-				}
-				break;
-			// nulls are disregarded
-			case 'undefined':
-				// undefineds are disregarded
-				break;
-			case 'string':
-			case 'number':
-			case 'boolean':
-				newNode.appendChild(doc.createTextNode(source));
-				break;
-			default:
-				throw new Error('an unhandled element appending situation was found');
-		}
-	}
+	addChildren(newNode, arguments, 1);
 
 	return newNode;
 }
 
-// attribute factories
+// attribute factory
 function attribute(name, value) {
 	const attr = doc.createAttribute(name, value);
 	attr.nodeValue = value;

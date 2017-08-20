@@ -1,6 +1,6 @@
 {
   "name": "bdom",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "a jsx compatible shorthand library for generating actual dom elements instead of virtual ones",
   "main": "index.js",
   "scripts": {

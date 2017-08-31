@@ -23,6 +23,8 @@ var reactDebugAttributes = {
 	__self: 1
 };
 
+var plugins = [];
+
 function addAttributesTo(node, attributes) {
 	var value = void 0;
 	for (var attrName in attributes) {
@@ -89,7 +91,7 @@ function addChild(element, child) {
 }
 
 // element factory
-function element(name) {
+function El(name) {
 	if (!name) {
 		throw new Error('you must provide a tag name for the createable element');
 	}
@@ -122,7 +124,7 @@ function attribute(name, value) {
 // methods to create shorthand builders
 function createEl(name) {
 	return function () {
-		return element.apply(dom, [name].concat(Array.prototype.slice.call(arguments)));
+		return El.apply(dom, [name].concat(Array.prototype.slice.call(arguments)));
 	};
 }
 
@@ -141,7 +143,7 @@ function data(arg1, arg2) {
 }
 
 var dom = {
-	element: element,
+	El: El,
 	text: function text(txt) {
 		return doc.createTextNode(txt);
 	},
@@ -350,6 +352,6 @@ var dom = {
 	wrap: createAttr('wrap')
 };
 
-dom.createElement = dom.element;
+dom.createElement = dom.El;
 
 module.exports = dom;

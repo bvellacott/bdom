@@ -7,10 +7,12 @@ const testedNodeTypes = {
 	DOCUMENT_FRAGMENT_NODE
 }
 
-var reactDebugAttributes = {
+const reactDebugAttributes = {
 	__source: 1,
 	__self: 1,
-};
+}
+
+const plugins = []
 
 function addAttributesTo(node, attributes) {
 	let value
@@ -89,7 +91,7 @@ function addChild(element, child) {
 }
 
 // element factory
-function element(name) {
+function El(name) {
 	if(!name) {
 		throw new Error('you must provide a tag name for the createable element')
 	}
@@ -123,7 +125,7 @@ function attribute(name, value) {
 
 // methods to create shorthand builders
 function createEl(name) { 
-	return function() { return element.apply(dom, [name, ...arguments]) }
+	return function() { return El.apply(dom, [name, ...arguments]) }
 }
 
 function createAttr(name) { 
@@ -140,7 +142,7 @@ function data(arg1, arg2) {
 
 
 const dom = {
-	element,
+	El,
 	text: function(txt) { return doc.createTextNode(txt) },
 	attribute,
 
@@ -347,6 +349,6 @@ const dom = {
 	wrap: createAttr('wrap')
 }
 
-dom.createElement = dom.element
+dom.createElement = dom.El
 
 module.exports = dom

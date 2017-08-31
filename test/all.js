@@ -7,14 +7,14 @@ const { window } = (new JSDOM(`...`));
 const doc = window.document
 global.window = window
 
-const { element, attribute, text } = tool = require('..')
+const { El, attribute, text } = tool = require('..')
 
 describe('element builder', () => {
 
   it('no name throws error', () => {
     let exceptionThrown = false
     try {
-    	element()
+    	El()
     } catch(e) {
     	exceptionThrown = true
     }
@@ -22,12 +22,12 @@ describe('element builder', () => {
   })
 
   it('only name - no children', () => {
-    const link = element('a')
+    const link = El('a')
     expect(link.nodeName).to.eql('A')
   })
 
   it('set attributes', () => {
-    const link = element('a', { string: 'string', number: 1, boolean: true })
+    const link = El('a', { string: 'string', number: 1, boolean: true })
     
     expect(link.getAttribute('string')).to.equal('string')
     expect(link.getAttribute('number')).to.equal('1')
@@ -40,21 +40,21 @@ describe('element builder', () => {
   	attr1.value = 'a link' 
   	attr2.value = 'a beauty' 
 
-    const link = element('a', attr1, attr2)
+    const link = El('a', attr1, attr2)
     
 		expect(link.getAttribute('id')).to.equal('a link')    
 		expect(link.getAttribute('class')).to.equal('a beauty')    
   })
 
   it('add child elements', () => {
-    const link = element('a', doc.createElement('span'), doc.createElement('i'))
+    const link = El('a', doc.createElement('span'), doc.createElement('i'))
     
 		expect(link.getElementsByTagName('span').length).to.equal(1)    
 		expect(link.getElementsByTagName('i').length).to.equal(1)    
   })
 
   it('add text nodes', () => {
-    const link = element('a', 
+    const link = El('a', 
     	doc.createTextNode('what a wonderful link'), 
     	doc.createTextNode(" - isn't it?"))
     
@@ -67,7 +67,7 @@ describe('element builder', () => {
     	doc.createTextNode(" - isn't it?")
    	]
 
-    const link = element('a', ary)
+    const link = El('a', ary)
     
 		expect(link.text).to.equal("what a wonderful link - isn't it?")    
   })
@@ -78,7 +78,7 @@ describe('element builder', () => {
   	const realLogger = global.console.log
   	global.console.log = (warn) => warning = warn
 
-    const link = element('a', doc.createComment('comcomcomcomcomc...'))
+    const link = El('a', doc.createComment('comcomcomcomcomc...'))
 
   	global.console.log = realLogger
     
@@ -97,7 +97,7 @@ describe('element builder', () => {
   	const realLogger = global.console.log
   	global.console.log = (warn) => warning = warn
 
-    const link = element('a', 
+    const link = El('a', 
 	    doc.createElement('span'), doc.createElement('i'),
     	{ string: 'string' },
     	doc.createTextNode('what a wonderful link'), 
@@ -137,7 +137,7 @@ describe('element builder', () => {
     fragment.appendChild(doc.createTextNode(" - isn't it?"))
     fragment.appendChild(doc.createComment('comcomcomcomcomc...'))
 
-    const link = element('a', fragment)
+    const link = El('a', fragment)
     
   	global.console.log = realLogger
 

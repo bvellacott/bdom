@@ -612,4 +612,3 @@ describe('attribute shorthand', () => {
 	it('width', () => { expect(tool.width().nodeName).to.equal('width') })
 	it('wrap', () => { expect(tool.wrap().nodeName).to.equal('wrap') })
 })
-

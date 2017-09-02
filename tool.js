@@ -2,6 +2,8 @@ const doc = window.document
 const { Element, Attr, DocumentFragment, Node} = window
 const { ELEMENT_NODE, ATTRIBUTE_NODE, DOCUMENT_FRAGMENT_NODE } = doc
 
+const svgNS = 'http://www.w3.org/2000/svg'
+
 const testedNodeTypes = {
 	ELEMENT_NODE, 
 	DOCUMENT_FRAGMENT_NODE
@@ -12,6 +14,61 @@ const reactDebugAttributes = {
 	__self: 1,
 }
 
+const svgnames = {
+	'svg': 1,
+	'g': 1,
+	'defs': 1,
+	'desc': 1,
+	'title': 1,
+	'symbol': 1,
+	'script': 1,
+	'use': 1,
+	'image': 1,
+	'switch': 1,
+	'style': 1,
+	'path': 1,
+	'rect': 1,
+	'circle': 1,
+	'ellipse': 1,
+	'line': 1,
+	'link': 1,
+	'polyline': 1,
+	'polygon': 1,
+	'text': 1,
+	'tspan': 1,
+	'tref': 1,
+	'textPath': 1,
+	'altGlyph': 1,
+	'glyphRef': 1,
+	'altGlyphItem': 1,
+	'altGlyphDef': 1,
+	'marker': 1,
+	'color-profile': 1,
+	'filter': 1,
+	'cursor': 1,
+	'view': 1,
+	'animate': 1,
+	'set': 1,
+	'animateMotion': 1,
+	'animateColor': 1,
+	'animateTransform': 1,
+	'font': 1,
+	'glyph': 1,
+	'missing-glyph': 1,
+	'hkern': 1,
+	'vkern': 1,
+	'font-face': 1,
+	'font-face-src': 1,
+	'font-face-uri': 1,
+	'font-face-format': 1,
+	'font-face-name': 1,
+	'foreignObject': 1,
+}
+
+const svgConversions = {
+	'link': 'a',
+}
+
 const plugins = []
 
 function addAttributesTo(node, attributes) {
@@ -19,7 +76,8 @@ function addAttributesTo(node, attributes) {
 	for (let attrName in attributes) {
 		value = attributes[attrName];
 		// check if a property with the name exists on the instance and set it instead if true
-		if(attrName in node || attrName in reactDebugAttributes) {
+		if(!node.namespaceURI === svgNS &&
+			attrName in node || attrName in reactDebugAttributes) {
 			let curValue = node[attrName]
 			if(curValue && typeof curValue === 'object') {
 				// if the target is an object, attempt to assign the value on it
@@ -107,6 +165,11 @@ function El(name) {
 	}
 	else if(name instanceof Element || name.nodeType === ELEMENT_NODE) {
 		newNode = name
+	}
+	else if(name in svgnames) {
+		const conversion = svgConversions[name]
+		newNode = doc.createElementNS(svgNS, conversion || name)
+		addChildren(newNode, arguments, 1)
 	}
 	else {
 		newNode = doc.createElement(name)

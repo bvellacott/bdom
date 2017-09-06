@@ -12,6 +12,7 @@ const testedNodeTypes = {
 const reactDebugAttributes = {
 	__source: 1,
 	__self: 1,
+	onclick: 1,
 }
 
 const svgnames = {
@@ -76,8 +77,8 @@ function addAttributesTo(node, attributes) {
 	for (let attrName in attributes) {
 		value = attributes[attrName];
 		// check if a property with the name exists on the instance and set it instead if true
-		if(!node.namespaceURI === svgNS &&
-			attrName in node || attrName in reactDebugAttributes) {
+		if(node.namespaceURI !== svgNS &&
+			(attrName in node || attrName in reactDebugAttributes)) {
 			let curValue = node[attrName]
 			if(curValue && typeof curValue === 'object') {
 				// if the target is an object, attempt to assign the value on it
@@ -92,6 +93,8 @@ function addAttributesTo(node, attributes) {
 		}
 		else if (value && typeof value !== 'string') {
 			value = typeof value.toString === 'function' ? value.toString() : '' + value;
+			// console.log(node.nodeName, ' : ', node.namespaceURI, ' : ', attrName)
+			// value = 'Haloo!'
 			node.setAttribute(attrName, value);
 		}
 		else {

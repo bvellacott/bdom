@@ -5,7 +5,7 @@ const { ELEMENT_NODE, ATTRIBUTE_NODE, DOCUMENT_FRAGMENT_NODE } = doc
 const svgNS = 'http://www.w3.org/2000/svg'
 
 const testedNodeTypes = {
-	ELEMENT_NODE, 
+	ELEMENT_NODE,
 	DOCUMENT_FRAGMENT_NODE
 }
 
@@ -77,8 +77,7 @@ function addAttributesTo(node, attributes) {
 	for (let attrName in attributes) {
 		value = attributes[attrName];
 		// check if a property with the name exists on the instance and set it instead if true
-		if(node.namespaceURI !== svgNS &&
-			(attrName in node || attrName in reactDebugAttributes)) {
+		if(attrName in node || attrName in reactDebugAttributes) {
 			let curValue = node[attrName]
 			if(curValue && typeof curValue === 'object') {
 				// if the target is an object, attempt to assign the value on it
@@ -116,15 +115,15 @@ function addChild(element, child) {
 				if(child instanceof Attr || /* deprecated node type -> */ child.nodeType === ATTRIBUTE_NODE) {
 					element.setAttributeNode(child)
 				}
-				else if(child.nodeType in testedNodeTypes || 
+				else if(child.nodeType in testedNodeTypes ||
 					child instanceof Element ||
 					child instanceof DocumentFragment) {
 					element.appendChild(child)
 				}
 				else if(child instanceof Node || child.nodeType) {
 					if(console && console.log) {
-						console.log('!WARNING! - support for nodes of type: ' + 
-							(child.name || child.nodeType) + 
+						console.log('!WARNING! - support for nodes of type: ' +
+							(child.name || child.nodeType) +
 							" hasn't been tested - !WARNING!")
 					}
 					element.appendChild(child)
@@ -184,24 +183,24 @@ function El(name) {
 
 // attribute factory
 function attribute(name, value) {
-	const attr = doc.createAttribute(name, value) 
+	const attr = doc.createAttribute(name, value)
 	attr.nodeValue = value
 	return attr
 }
 
 // methods to create shorthand builders
-function createEl(name) { 
+function createEl(name) {
 	return function() { return El.apply(dom, [name, ...arguments]) }
 }
 
-function createAttr(name) { 
+function createAttr(name) {
 	return function(value) { return attribute(name, value) }
 }
 
 // data is a special case because it has an optional extension
 function data(arg1, arg2) {
 	if(arguments.length > 1) {
-		return attribute('data-' + arg1, arg2) 
+		return attribute('data-' + arg1, arg2)
 	}
 	return attribute('data', arg1)
 }

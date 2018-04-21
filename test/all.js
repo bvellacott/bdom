@@ -28,7 +28,7 @@ describe('element builder', () => {
 
   it('set attributes', () => {
     const link = El('a', { string: 'string', number: 1, boolean: true })
-    
+
     expect(link.getAttribute('string')).to.equal('string')
     expect(link.getAttribute('number')).to.equal('1')
     expect(link.getAttribute('boolean')).to.equal('true')
@@ -37,39 +37,56 @@ describe('element builder', () => {
   it('add explicit attributes', () => {
   	const attr1 = doc.createAttribute('id')
   	const attr2 = doc.createAttribute('class')
-  	attr1.value = 'a link' 
-  	attr2.value = 'a beauty' 
+  	attr1.value = 'a link'
+  	attr2.value = 'a beauty'
 
     const link = El('a', attr1, attr2)
-    
-		expect(link.getAttribute('id')).to.equal('a link')    
-		expect(link.getAttribute('class')).to.equal('a beauty')    
+
+		expect(link.getAttribute('id')).to.equal('a link')
+		expect(link.getAttribute('class')).to.equal('a beauty')
+  })
+
+  it('set existing object attribute - html', () => {
+  	const style = { color: 'red' }
+
+    const link = El('a', { style })
+
+		expect(link.style.color).to.equal('red')
+  })
+
+  it('set existing object attribute - svg', () => {
+  	const style = { fill: 'red' }
+
+    const rect = El('rect', { style })
+
+		console.log(rect.style)
+		expect(rect.style.fill).to.equal('red')
   })
 
   it('add child elements', () => {
     const link = El('a', doc.createElement('span'), doc.createElement('i'))
-    
-		expect(link.getElementsByTagName('span').length).to.equal(1)    
-		expect(link.getElementsByTagName('i').length).to.equal(1)    
+
+		expect(link.getElementsByTagName('span').length).to.equal(1)
+		expect(link.getElementsByTagName('i').length).to.equal(1)
   })
 
   it('add text nodes', () => {
-    const link = El('a', 
-    	doc.createTextNode('what a wonderful link'), 
+    const link = El('a',
+    	doc.createTextNode('what a wonderful link'),
     	doc.createTextNode(" - isn't it?"))
-    
-		expect(link.text).to.equal("what a wonderful link - isn't it?")    
+
+		expect(link.text).to.equal("what a wonderful link - isn't it?")
   })
 
   it('array of children', () => {
   	const ary = [
-			doc.createTextNode('what a wonderful link'), 
+			doc.createTextNode('what a wonderful link'),
     	doc.createTextNode(" - isn't it?")
    	]
 
     const link = El('a', ary)
-    
-		expect(link.text).to.equal("what a wonderful link - isn't it?")    
+
+		expect(link.text).to.equal("what a wonderful link - isn't it?")
   })
 
   it('other nodes show a warning', () => {
@@ -81,9 +98,9 @@ describe('element builder', () => {
     const link = El('a', doc.createComment('comcomcomcomcomc...'))
 
   	global.console.log = realLogger
-    
+
 		expect(warning).to.equal("!WARNING! - support for nodes" +
-			" of type: 8 hasn\'t been tested - !WARNING!")    
+			" of type: 8 hasn\'t been tested - !WARNING!")
   })
 
   it('add all in mixed order', () => {
@@ -91,36 +108,36 @@ describe('element builder', () => {
 
   	const attr1 = doc.createAttribute('id')
   	const attr2 = doc.createAttribute('class')
-  	attr1.value = 'a link' 
-  	attr2.value = 'a beauty' 
+  	attr1.value = 'a link'
+  	attr2.value = 'a beauty'
 
   	const realLogger = global.console.log
   	global.console.log = (warn) => warning = warn
 
-    const link = El('a', 
+    const link = El('a',
 	    doc.createElement('span'), doc.createElement('i'),
     	{ string: 'string' },
-    	doc.createTextNode('what a wonderful link'), 
+    	doc.createTextNode('what a wonderful link'),
     	{ number: 1 },
     	doc.createTextNode(" - isn't it?"),
     	{ boolean: true },
     	doc.createComment('comcomcomcomcomc...'),
-    	attr1, 
+    	attr1,
     	attr2
     )
-    
+
   	global.console.log = realLogger
 
     expect(link.getAttribute('string')).to.equal('string')
     expect(link.getAttribute('number')).to.equal('1')
     expect(link.getAttribute('boolean')).to.equal('true')
-		expect(link.getAttribute('id')).to.equal('a link')    
-		expect(link.getAttribute('class')).to.equal('a beauty')    
-		expect(link.getElementsByTagName('span').length).to.equal(1)    
-		expect(link.getElementsByTagName('i').length).to.equal(1)    
-		expect(link.text).to.equal("what a wonderful link - isn't it?")    
+		expect(link.getAttribute('id')).to.equal('a link')
+		expect(link.getAttribute('class')).to.equal('a beauty')
+		expect(link.getElementsByTagName('span').length).to.equal(1)
+		expect(link.getElementsByTagName('i').length).to.equal(1)
+		expect(link.text).to.equal("what a wonderful link - isn't it?")
 		expect(warning).to.equal("!WARNING! - support for nodes" +
-			" of type: 8 hasn\'t been tested - !WARNING!")    
+			" of type: 8 hasn\'t been tested - !WARNING!")
   })
 
 
@@ -133,18 +150,18 @@ describe('element builder', () => {
   	const fragment = doc.createDocumentFragment()
 	  fragment.appendChild(doc.createElement('span'))
 	  fragment.appendChild(doc.createElement('i'))
-    fragment.appendChild(doc.createTextNode('what a wonderful link')) 
+    fragment.appendChild(doc.createTextNode('what a wonderful link'))
     fragment.appendChild(doc.createTextNode(" - isn't it?"))
     fragment.appendChild(doc.createComment('comcomcomcomcomc...'))
 
     const link = El('a', fragment)
-    
+
   	global.console.log = realLogger
 
-		expect(link.getElementsByTagName('span').length).to.equal(1)    
-		expect(link.getElementsByTagName('i').length).to.equal(1)    
-		expect(link.text).to.equal("what a wonderful link - isn't it?")    
-		expect(warning).to.be(undefined)    
+		expect(link.getElementsByTagName('span').length).to.equal(1)
+		expect(link.getElementsByTagName('i').length).to.equal(1)
+		expect(link.text).to.equal("what a wonderful link - isn't it?")
+		expect(warning).to.be(undefined)
   })
 
 })
@@ -255,243 +272,243 @@ describe('svg element shorthand', () => {
 	// the main builder has been tested, so only need to test that the right names apply
 	it('svg', () => {
 		const el = tool.Svg()
-		expect(el.nodeName).to.equal('svg') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('svg')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('g', () => { 
+	it('g', () => {
 		const el = tool.G()
-		expect(el.nodeName).to.equal('g') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('g')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('defs', () => { 
+	it('defs', () => {
 		const el = tool.Defs()
-		expect(el.nodeName).to.equal('defs') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('defs')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('desc', () => { 
+	it('desc', () => {
 		const el = tool.Desc()
-		expect(el.nodeName).to.equal('desc') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('desc')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('title', () => { 
+	it('title', () => {
 		const el = tool.Title()
-		expect(el.nodeName).to.equal('title') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('title')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('symbol', () => { 
+	it('symbol', () => {
 		const el = tool.Symbol()
-		expect(el.nodeName).to.equal('symbol') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('symbol')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('script', () => { 
+	it('script', () => {
 		const el = tool.Script()
-		expect(el.nodeName).to.equal('script') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('script')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('use', () => { 
+	it('use', () => {
 		const el = tool.Use()
-		expect(el.nodeName).to.equal('use') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('use')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('image', () => { 
+	it('image', () => {
 		const el = tool.Image()
-		expect(el.nodeName).to.equal('image') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('image')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('switch', () => { 
+	it('switch', () => {
 		const el = tool.Switch()
-		expect(el.nodeName).to.equal('switch') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('switch')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('style', () => { 
+	it('style', () => {
 		const el = tool.Style()
-		expect(el.nodeName).to.equal('style') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('style')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('path', () => { 
+	it('path', () => {
 		const el = tool.Path()
-		expect(el.nodeName).to.equal('path') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('path')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('rect', () => { 
+	it('rect', () => {
 		const el = tool.Rect()
-		expect(el.nodeName).to.equal('rect') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('rect')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('circle', () => { 
+	it('circle', () => {
 		const el = tool.Circle()
-		expect(el.nodeName).to.equal('circle') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('circle')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('ellipse', () => { 
+	it('ellipse', () => {
 		const el = tool.Ellipse()
-		expect(el.nodeName).to.equal('ellipse') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('ellipse')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('line', () => { 
+	it('line', () => {
 		const el = tool.Line()
-		expect(el.nodeName).to.equal('line') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('line')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('link', () => { 
+	it('link', () => {
 		const el = tool.Link()
-		expect(el.nodeName).to.equal('a') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('a')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('polyline', () => { 
+	it('polyline', () => {
 		const el = tool.Polyline()
-		expect(el.nodeName).to.equal('polyline') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('polyline')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('polygon', () => { 
+	it('polygon', () => {
 		const el = tool.Polygon()
-		expect(el.nodeName).to.equal('polygon') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('polygon')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('text', () => { 
+	it('text', () => {
 		const el = tool.Text()
-		expect(el.nodeName).to.equal('text') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('text')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('tspan', () => { 
+	it('tspan', () => {
 		const el = tool.Tspan()
-		expect(el.nodeName).to.equal('tspan') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('tspan')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('tref', () => { 
+	it('tref', () => {
 		const el = tool.Tref()
-		expect(el.nodeName).to.equal('tref') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('tref')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('textPath', () => { 
+	it('textPath', () => {
 		const el = tool.TextPath()
-		expect(el.nodeName).to.equal('textPath') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('textPath')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('altGlyph', () => { 
+	it('altGlyph', () => {
 		const el = tool.AltGlyph()
-		expect(el.nodeName).to.equal('altGlyph') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('altGlyph')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('glyphRef', () => { 
+	it('glyphRef', () => {
 		const el = tool.GlyphRef()
-		expect(el.nodeName).to.equal('glyphRef') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('glyphRef')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('altGlyphItem', () => { 
+	it('altGlyphItem', () => {
 		const el = tool.AltGlyphItem()
-		expect(el.nodeName).to.equal('altGlyphItem') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('altGlyphItem')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('altGlyphDef', () => { 
+	it('altGlyphDef', () => {
 		const el = tool.AltGlyphDef()
-		expect(el.nodeName).to.equal('altGlyphDef') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('altGlyphDef')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('marker', () => { 
+	it('marker', () => {
 		const el = tool.Marker()
-		expect(el.nodeName).to.equal('marker') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('marker')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('color-profile', () => { 
+	it('color-profile', () => {
 		const el = tool.ColorProfile()
-		expect(el.nodeName).to.equal('color-profile') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('color-profile')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('filter', () => { 
+	it('filter', () => {
 		const el = tool.Filter()
-		expect(el.nodeName).to.equal('filter') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('filter')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('cursor', () => { 
+	it('cursor', () => {
 		const el = tool.Cursor()
-		expect(el.nodeName).to.equal('cursor') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('cursor')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('view', () => { 
+	it('view', () => {
 		const el = tool.View()
-		expect(el.nodeName).to.equal('view') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('view')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('animate', () => { 
+	it('animate', () => {
 		const el = tool.Animate()
-		expect(el.nodeName).to.equal('animate') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('animate')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('set', () => { 
+	it('set', () => {
 		const el = tool.Set()
-		expect(el.nodeName).to.equal('set') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('set')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('animateMotion', () => { 
+	it('animateMotion', () => {
 		const el = tool.AnimateMotion()
-		expect(el.nodeName).to.equal('animateMotion') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('animateMotion')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('animateColor', () => { 
+	it('animateColor', () => {
 		const el = tool.AnimateColor()
-		expect(el.nodeName).to.equal('animateColor') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('animateColor')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('animateTransform', () => { 
+	it('animateTransform', () => {
 		const el = tool.AnimateTransform()
-		expect(el.nodeName).to.equal('animateTransform') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('animateTransform')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('font', () => { 
+	it('font', () => {
 		const el = tool.Font()
-		expect(el.nodeName).to.equal('font') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('font')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('glyph', () => { 
+	it('glyph', () => {
 		const el = tool.Glyph()
-		expect(el.nodeName).to.equal('glyph') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('glyph')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('missing-glyph', () => { 
+	it('missing-glyph', () => {
 		const el = tool.MissingGlyph()
-		expect(el.nodeName).to.equal('missing-glyph') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('missing-glyph')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('hkern', () => { 
+	it('hkern', () => {
 		const el = tool.Hkern()
-		expect(el.nodeName).to.equal('hkern') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('hkern')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('vkern', () => { 
+	it('vkern', () => {
 		const el = tool.Vkern()
-		expect(el.nodeName).to.equal('vkern') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('vkern')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('font-face', () => { 
+	it('font-face', () => {
 		const el = tool.FontFace()
-		expect(el.nodeName).to.equal('font-face') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('font-face')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('font-face-src', () => { 
+	it('font-face-src', () => {
 		const el = tool.FontFaceSrc()
-		expect(el.nodeName).to.equal('font-face-src') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('font-face-src')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('font-face-uri', () => { 
+	it('font-face-uri', () => {
 		const el = tool.FontFaceUri()
-		expect(el.nodeName).to.equal('font-face-uri') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('font-face-uri')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('font-face-format', () => { 
+	it('font-face-format', () => {
 		const el = tool.FontFaceFormat()
-		expect(el.nodeName).to.equal('font-face-format') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('font-face-format')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('font-face-name', () => { 
+	it('font-face-name', () => {
 		const el = tool.FontFaceName()
-		expect(el.nodeName).to.equal('font-face-name') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('font-face-name')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
-	it('foreignObject', () => { 
+	it('foreignObject', () => {
 		const el = tool.ForeignObject()
-		expect(el.nodeName).to.equal('foreignObject') 
-		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg') 
+		expect(el.nodeName).to.equal('foreignObject')
+		expect(el.namespaceURI).to.equal('http://www.w3.org/2000/svg')
 	})
 })
 

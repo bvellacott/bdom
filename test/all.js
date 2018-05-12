@@ -54,12 +54,11 @@ describe('element builder', () => {
 		expect(link.style.color).to.equal('red')
   })
 
-  it('set existing object attribute - svg', () => {
+  it('set style object attribute - svg', () => {
   	const style = { fill: 'red' }
 
     const rect = El('rect', { style })
 
-		console.log(rect.style)
 		expect(rect.style.fill).to.equal('red')
   })
 

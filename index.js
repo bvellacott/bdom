@@ -88,7 +88,7 @@ function addAttributesTo(node, attributes) {
 	for (var attrName in attributes) {
 		value = attributes[attrName];
 		// check if a property with the name exists on the instance and set it instead if true
-		if (attrName in node || attrName in reactDebugAttributes) {
+		if (attrName === 'style' || node.namespaceURI !== svgNS && (attrName in node || attrName in reactDebugAttributes)) {
 			var curValue = node[attrName];
 			if (curValue && (typeof curValue === 'undefined' ? 'undefined' : _typeof(curValue)) === 'object') {
 				// if the target is an object, attempt to assign the value on it

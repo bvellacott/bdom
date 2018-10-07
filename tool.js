@@ -70,6 +70,12 @@ const svgConversions = {
 	'link': 'a',
 }
 
+const objectAttributes = {
+	'style': 1,
+	'__source': 1,
+	'__self': 1,
+}
+
 const plugins = []
 
 function addAttributesTo(node, attributes) {
@@ -77,7 +83,7 @@ function addAttributesTo(node, attributes) {
 	for (let attrName in attributes) {
 		value = attributes[attrName];
 		// check if a property with the name exists on the instance and set it instead if true
-		if(attrName === 'style' || node.namespaceURI !== svgNS &&
+		if(objectAttributes[attrName] || node.namespaceURI !== svgNS &&
 			(attrName in node || attrName in reactDebugAttributes)) {
 			let curValue = node[attrName]
 			if(curValue && typeof curValue === 'object') {
